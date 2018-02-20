@@ -13,7 +13,8 @@ from pymongo import MongoClient
 from collections import defaultdict
 
 
-client = MongoClient("localhost:27017")
+#client = MongoClient("localhost:27017")
+client = MongoClient("mongodb://demouser:zy43tt36@transat-shard-00-00-9lerf.mongodb.net:27017,transat-shard-00-01-9lerf.mongodb.net:27017,transat-shard-00-02-9lerf.mongodb.net:27017/test?ssl=true&replicaSet=transat-shard-0&authSource=admin")
 db = client.competition
 flights = db.flights
 
@@ -41,13 +42,13 @@ for name in glob.glob("*.csv"):
                 "carrier" : row["carrier"],
                 "outbound_flight_no" : row["outbound_flight_no"].split(','),
                 "inbound_flight_no" : row["inbound_flight_no"].split(','),
-                "outbound_departure_date" : (datetime.strptime(row["outbound_departure_date"],"%Y-%m-%d") if row["outbound_departure_date"]!="" else ""),
+               # "outbound_departure_date" : (datetime.strptime(row["outbound_departure_date"],"%Y-%m-%d") if row["outbound_departure_date"]!="" else ""),
                 "outbound_departure_time" : row["outbound_departure_time"],
-                "outbound_arrival_date" : (datetime.strptime(row["outbound_arrival_date"],"%Y-%m-%d") if row["outbound_arrival_date"]!="" else ""),
+               # "outbound_arrival_date" : (datetime.strptime(row["outbound_arrival_date"],"%Y-%m-%d") if row["outbound_arrival_date"]!="" else ""),
                 "outbound_arrival_time" : row["outbound_arrival_time"],
-                "inbound_departure_date" : (datetime.strptime(row["inbound_departure_date"],"%Y-%m-%d") if row["inbound_departure_date"]!="" else ""),
+               # "inbound_departure_date" : (datetime.strptime(row["inbound_departure_date"],"%Y-%m-%d") if row["inbound_departure_date"]!="" else ""),
                 "inbound_departure_time" : row["inbound_departure_time"],
-                "inbound_arrival_date" : (datetime.strptime(row["inbound_arrival_date"],"%Y-%m-%d") if row["inbound_arrival_date"]!="" else ""),
+               # "inbound_arrival_date" : (datetime.strptime(row["inbound_arrival_date"],"%Y-%m-%d") if row["inbound_arrival_date"]!="" else ""),
                 "inbound_arrival_time" : row["inbound_arrival_time"],
                 "outbound_fare_basis" : row["outbound_fare_basis"].split(','),
                 "inbound_fare_basis" : row["inbound_fare_basis"].split(','),
@@ -69,6 +70,15 @@ for name in glob.glob("*.csv"):
                 "min_stay" : (int(row["min_stay"]) if row["min_stay"]!="" else 0),
                 "outbound_flight_duration" : (int(row["outbound_flight_duration"]) if row["outbound_flight_duration"]!="" else 0),
                 "inbound_flight_duration" : (int(row["inbound_flight_duration"]) if row["inbound_flight_duration"]!="" else 0)}
+           #Do this to prevent filling documents with null field
+           if row["outbound_departure_date"]!="":
+               doc["outbound_departure_date"] = datetime.strptime(row["outbound_departure_date"],"%Y-%m-%d")
+           if row["outbound_arrival_date"]!="":
+               doc["outbound_arrival_date"] = datetime.strptime(row["outbound_arrival_date"],"%Y-%m-%d")
+           if row["inbound_departure_date"]!="":
+               doc["inbound_departure_date"] = datetime.strptime(row["inbound_departure_date"],"%Y-%m-%d")
+           if row["inbound_arrival_date"]!="":
+               doc["inbound_arrival_date"] = datetime.strptime(row["inbound_arrival_date"],"%Y-%m-%d")
            if bulk_count > 0 and bulk_count % 1000 == 0:
               bulk.execute()
               bulk = flights.initialize_ordered_bulk_op()
