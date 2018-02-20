@@ -14,7 +14,7 @@ from collections import defaultdict
 
 
 #client = MongoClient("localhost:27017")
-client = MongoClient("mongodb://demouser:zy43tt36@transat-shard-00-00-9lerf.mongodb.net:27017,transat-shard-00-01-9lerf.mongodb.net:27017,transat-shard-00-02-9lerf.mongodb.net:27017/test?ssl=true&replicaSet=transat-shard-0&authSource=admin")
+client = MongoClient("mongodb://demouser:PASSWORD@transat-shard-00-00-9lerf.mongodb.net:27017,transat-shard-00-01-9lerf.mongodb.net:27017,transat-shard-00-02-9lerf.mongodb.net:27017/test?ssl=true&replicaSet=transat-shard-0&authSource=admin")
 db = client.competition
 flights = db.flights
 
